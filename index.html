@@ -48,13 +48,13 @@ const $=id=>document.getElementById(id), movie=$('movie');let role='Jenny',mode=
 function choices(){let html='';for(let m of ['Memorization','Substitution'])for(let r of ['Michael','Jenny'])html+=`<button class="choice ${m===mode&&r===role?'active':''}" onclick="selectPractice('${r}','${m}')"><strong>${r} · ${m}</strong><span>${m==='Memorization'?'Original dialogue · 암기 연습':'Random word cues · 교체 연습'}</span></button>`;$('choices').innerHTML=html;}function selectPractice(r,m){flush(false);movie.pause();role=r;mode=m;movie.src=''+r+'_speaking_practice_illustrated.mp4';movie.load();seconds=0;lastTime=0;started=false;randomize();choices();$('practiceLayout').classList.toggle('substitution',m==='Substitution');$('status').textContent=r+' · '+m+' selected.'}
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const placeEnglish={'둘루스':'Duluth','디케이터':'Decatur','미드타운':'Midtown','도라빌':'Doraville','벅헤드':'Buckhead','샌디 스프링스':'Sandy Springs'};
-const destEnglish={'도서관':'library','교실':'classroom','학생 식당':'dining hall','서점':'bookstore'};
-const transportEnglish={'걸어서':'on foot','버스로':'by bus','차로':'by car','지하철로':'by subway','자전거로':'by bicycle'};
+const destEnglish={'도서관':'library','교실':'classroom','학생 식당':'school cafeteria','서점':'bookstore'};
+const transportEnglish={'걸어서':'on foot','버스':'by bus','차':'by car','지하철':'by subway','자전거':'by bicycle'};
 const timeEnglish={'10분':'10 minutes','15분':'15 minutes','30분':'30 minutes','1시간':'1 hour','1시간 30분':'1 hour and 30 minutes','2시간':'2 hours'};
 let prompts={};
 function randomize(){
   const place=pick(Object.keys(placeEnglish));
-  const jTransport=pick(['차로','지하철로','버스로','자전거로']);
+  const jTransport=pick(['차','지하철','버스','자전거']);
   const jTime=pick(['30분','1시간','1시간 30분','2시간']);
   const destination=pick(Object.keys(destEnglish));
   const mTime=pick(['10분','15분','30분','1시간']);
