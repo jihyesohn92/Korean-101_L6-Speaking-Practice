@@ -21,12 +21,12 @@ function choices(){let html='';for(let m of ['Memorization','Substitution'])for(
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const placeEnglish={'둘루스':'Duluth','디케이터':'Decatur','미드타운':'Midtown','도라빌':'Doraville','벅헤드':'Buckhead','샌디 스프링스':'Sandy Springs'};
 const destEnglish={'도서관':'library','교실':'classroom','학생 식당':'dining hall','서점':'bookstore'};
-const transportEnglish={'걸어서':'on foot','버스로':'by bus','차로':'by car','지하철로':'by subway','자전거로':'by bicycle'};
+const transportEnglish={'걸어서':'on foot','버스':'by bus','차':'by car','지하철':'by subway','자전거':'by bicycle'};
 const timeEnglish={'10분':'10 minutes','15분':'15 minutes','30분':'30 minutes','1시간':'1 hour','1시간 30분':'1 hour and 30 minutes','2시간':'2 hours'};
 let prompts={};
 function randomize(){
   const place=pick(Object.keys(placeEnglish));
-  const jTransport=pick(['차로','지하철로','버스로','자전거로']);
+  const jTransport=pick(['차','지하철','버스','자전거']);
   const jTime=pick(['30분','1시간','1시간 30분','2시간']);
   const destination=pick(Object.keys(destEnglish));
   const mTime=pick(['10분','15분','30분','1시간']);
@@ -40,14 +40,22 @@ function randomize(){
   };updateCue();
 }
 function updateCue(){
-  const segment=segments[role].find(x=>movie.currentTime>=x.start&&movie.currentTime<x.end);
+  const segmentIndex=segments[role].findIndex(x=>movie.currentTime>=x.start&&movie.currentTime<x.end);
+  const segment=segments[role][segmentIndex];
   const prompt=mode==='Substitution'&&segment?.cue?prompts[segment.cue]:null;
-  // Keep the original video artwork unchanged; all replacement text goes in the side panel.
+  // Michael's first turn has no substitution: show only its English translation.
+  const fixedTranslation=mode==='Substitution'&&role==='Michael'&&segmentIndex===0
+    ? 'Jenny, where do you live?' : null;
+  const panel=$('promptPanel');
   $('cue').hidden=true;
-  $('promptPanel').classList.toggle('waiting',!prompt);
-  $('promptKorean').textContent=prompt?prompt.ko:'Wait for YOUR TURN';
-  $('promptMeaning').textContent=prompt?prompt.en:'Random Korean words and their meanings will appear here.';
-  $('promptTranslation').textContent=prompt?prompt.translation:'The English sentence will appear when it is your turn.';
+  panel.classList.toggle('waiting',!prompt&&!fixedTranslation);
+  panel.querySelector('.prompt-label').hidden=!!fixedTranslation||!prompt;
+  $('promptKorean').hidden=!!fixedTranslation||!prompt;
+  $('promptMeaning').hidden=!!fixedTranslation||!prompt;
+  panel.querySelector('.prompt-translation').hidden=!prompt&&!fixedTranslation;
+  $('promptKorean').textContent=prompt?prompt.ko:'';
+  $('promptMeaning').textContent=prompt?prompt.en:'';
+  $('promptTranslation').textContent=prompt?prompt.translation:(fixedTranslation||'');
 }
 function restart(){if(!nameOK())return;flush(false);movie.currentTime=0;seconds=0;lastTime=0;started=true;randomize();movie.play().catch(e=>alert('Video playback error: '+e.message));$('status').textContent='Playing · '+role+' / '+mode}function pause(){movie.pause();flush(false);$('status').textContent='Paused.'}function nameOK(){if(!$('studentName').value.trim()){alert('Please enter a demo name first.');$('studentName').focus();return false}return true}
 function getSessions(){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch{return []}}function saveSessions(a){localStorage.setItem(key,JSON.stringify(a));refresh()}
