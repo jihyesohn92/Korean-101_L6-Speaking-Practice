@@ -10,6 +10,36 @@
 .practice-layout .video video{position:absolute;inset:0;width:100%;height:100%;max-width:100%;object-fit:contain}
 .practice-layout .prompt-panel{min-width:0;overflow-wrap:anywhere;position:relative;z-index:1}
 @media(max-width:760px){.practice-layout,.practice-layout.substitution{grid-template-columns:minmax(0,1fr)}}
+/* Give the practice video and prompt panel full width */
+#student > .cols {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Keep the video and prompt side by side */
+#practiceLayout.substitution {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+/* Prevent the video from covering the prompt */
+#practiceLayout .video,
+#practiceLayout .prompt-panel {
+  min-width: 0;
+  width: 100%;
+}
+
+#practiceLayout .video video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Put the prompt below the video on narrow screens */
+@media (max-width: 760px) {
+  #practiceLayout.substitution {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 </style></head><body><main><header><div class="brand"><div class="logo">🎙️</div><div><h1>Korean Speaking Lab</h1><div class="muted small">Lesson 6 · Conversation 1 · Interactive teacher demo</div></div></div><nav><button id="studentTab" class="active" onclick="tab('student')">Student Practice</button><button id="teacherTab" onclick="tab('teacher')">Teacher Dashboard</button></nav></header>
 <section id="student"><div class="note warn"><b>Teacher demonstration only.</b> Use a made-up name. Practice history stays in this browser; recordings are not uploaded to a server.</div><div class="cols"><div><div class="panel"><h2>Choose a practice</h2><div class="cards" id="choices"></div><div id="practiceLayout" class="practice-layout"><div class="video"><video id="movie" playsinline preload="metadata" src="Jenny_speaking_practice_illustrated.mp4"></video><div id="cue" class="cue" hidden></div></div><aside id="promptPanel" class="prompt-panel waiting" aria-live="polite" aria-atomic="true"><div class="prompt-label">Substitution prompt</div><div id="promptKorean" class="prompt-korean">Ready to practice</div><div id="promptMeaning" class="prompt-meaning">The next random words will appear during your turn.</div><div class="prompt-translation"><strong>English translation</strong><span id="promptTranslation">Wait for your speaking turn.</span></div></aside></div><div class="actions"><button class="primary" onclick="restart()">▶ Play / Restart</button><button class="secondary" onclick="pause()">Ⅱ Pause</button><button class="secondary" onclick="randomize()">↻ New words</button></div><p id="status" class="muted small">Choose a role and press Play. Substitution prompts and English translations appear on the right only during your speaking turn.</p></div></div><div><div class="panel"><h2>Record your practice</h2><label>Demo name</label><input id="studentName" placeholder="e.g. Demo Student A" maxlength="60"><label>Recording type</label><select id="kind"><option value="audio">🎙️ Audio only</option><option value="video">📹 Camera video + audio</option></select><p class="muted small">The recording mixes the dialogue audio with your microphone. For video, it records your webcam, not the practice screen. Headphones recommended.</p><div class="actions"><button class="primary" id="start" onclick="startRecording()">● Start recording</button><button class="secondary" id="stop" onclick="stopRecording()" disabled>■ Stop</button></div><p id="recStatus" class="muted small">Not recording.</p><video id="camera" autoplay muted playsinline style="width:100%;max-height:180px" hidden></video><div id="playback"></div><div class="actions"><button class="secondary" id="download" onclick="downloadRecording()" disabled>↓ Download recording</button></div><div class="note">Demo mode: recordings are downloaded to your device only. The teacher dashboard displays local practice sessions, not shared submissions.</div></div><div class="panel"><h2>My demo practice</h2><div class="stats"><div class="stat"><b id="myCount">0</b><span>Sessions</span></div><div class="stat"><b id="myTime">0</b><span>Minutes</span></div><div class="stat"><b id="myDone">0</b><span>Completed</span></div></div></div></div></div></section>
 <section id="teacher"><div class="panel"><h2>Teacher Dashboard <span class="pill">Demo</span></h2><p class="muted small">This is a demonstration of the dashboard design. It reads practice sessions saved in this browser only. There is no teacher password or remote student data in this static demo.</p><div class="stats"><div class="stat"><b id="totalStudents">0</b><span>Demo names</span></div><div class="stat"><b id="totalSessions">0</b><span>Practice sessions</span></div><div class="stat"><b id="totalMinutes">0</b><span>Minutes practiced</span></div></div></div><div class="panel"><h2>Practice history</h2><div style="overflow:auto"><table><thead><tr><th>Name</th><th>Role</th><th>Type</th><th>Time</th><th>Completed</th><th>Date</th></tr></thead><tbody id="history"></tbody></table></div><div class="actions"><button class="secondary" onclick="exportCSV()">↓ Export CSV</button><button class="secondary" onclick="clearDemo()">Clear demo history</button></div></div><div class="note warn">Before using this with real students, deploy a secure server with verified accounts, protected storage, and institution-approved handling of recordings and student data.</div></section><footer>Korean Speaking Lab · Demonstration build · No account or server required</footer></main>
